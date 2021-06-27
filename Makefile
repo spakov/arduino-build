@@ -10,9 +10,15 @@ CFLAGS ?= --warnings all
 # Pass extra arguments to upload
 UFLAGS ?= 
 
-# Build paths to the sketch we're working with
-sketch_abs := $(shell pwd)
-sketch := $(shell basename $(sketch_abs))
+# Use for a comma in macros
+c := ,
+
+# Use for a single quote in macros
+q := '"'"'
+
+# Use for an opening/closing paren in macros
+l := (
+r := )
 
 # Build paths to this Makefile, the .build directory, the sketchbook directory,
 # and the targets directory
@@ -20,6 +26,20 @@ this := $(abspath $(lastword $(MAKEFILE_LIST)))
 build_dir := $(dir $(this))
 sketchbook := $(shell dirname $(build_dir))
 targets := $(build_dir)targets
+
+# Build paths to the sketch we're working with
+sketch_abs := $(shell pwd)
+sketch_rel := $(shell \
+	a=$(sketchbook); \
+	b=$(sketch_abs); \
+	r=; \
+	while [ -z $$$lgrep "^$$a" <<< $$b$r ]; do \
+	  a=$${a%/*}; \
+	  r=$${r}../; \
+	done; \
+	echo $$r$$$lsed "s*^$$a/**g" <<< $$b$r \
+)
+sketch := $(shell basename $(sketch_abs))
 
 # Target shell script
 target := $(targets)/$(TARGET).sh
@@ -35,7 +55,7 @@ compile: validate
 	@$(call header,Compiling)
 	cd "$(sketchbook)" && \
 	source "$(target)" && \
-	"$(ARDUINO_CLI)" compile $(CFLAGS) --fqbn "$$fqbn" "$(sketch)" && \
+	"$(ARDUINO_CLI)" compile $(CFLAGS) --fqbn "$$fqbn" "$(sketch_rel)" && \
 	cd "$(sketch_abs)"
 
 # Upload target
@@ -44,7 +64,7 @@ upload: validate
 	@$(call header,Uploading)
 	cd "$(sketchbook)" && \
 	source "$(target)" && \
-	"$(ARDUINO_CLI)" upload $(UFLAGS) -p "$$port" --fqbn "$$fqbn" "$(sketch)" && \
+	"$(ARDUINO_CLI)" upload $(UFLAGS) -p "$$port" --fqbn "$$fqbn" "$(sketch_rel)" && \
 	cd "$(sketch_abs)"
 
 # Monitor target
@@ -77,16 +97,6 @@ warn = printf '\033[0;91m%s\033[0m' '$(1)' 1>&2
 
 # Same as warn, but with a newline
 warnln = printf '\033[0;91m%s\n\033[0m' '$(1)' 1>&2
-
-# Use for a comma in warn/warnln
-c := ,
-
-# Use for a single quote in warn/warnln
-q := '"'"'
-
-# Use for an opening/closing paren in warn/warnln
-l := (
-r := )
 
 # Print a brief countdown to allow the user to read text
 countdown := for i in $$(seq 3 1); do printf "$$i... "; sleep 1; done; echo
