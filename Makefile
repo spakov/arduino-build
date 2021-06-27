@@ -35,7 +35,7 @@ compile: validate
 	@$(call header,Compiling)
 	cd "$(sketchbook)" && \
 	source "$(target)" && \
-	"$(ARDUINO_CLI)" compile --verbose $(CFLAGS) --fqbn "$$fqbn" "$(sketch)" && \
+	"$(ARDUINO_CLI)" compile $(CFLAGS) --fqbn "$$fqbn" "$(sketch)" && \
 	cd "$(sketch_abs)"
 
 # Upload target
