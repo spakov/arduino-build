@@ -42,19 +42,27 @@ perform the compilation for the selected `TARGET`.
 
 Specify flags to pass to `arduino-cli compile` using `CFLAGS`.
 
+Alias of this target is c.
+
 ### doc
 Generates documentation for your project. By default, it's configured to use
 Apple HeaderDoc to do this (which comes with the Xcode Command Line tools for
 MacOS), but you can tailor it to use your preferred documentation generator.
+
+Alias of this target is d.
 
 ### monitor
 Monitors the Arduino's serial output, using screen. To exit screen and detach
 the serial device nicely, use `C-a C-\ y` (that is, Ctrl-A followed by Ctrl-\\
 followed by Y).
 
+Alias of this target is m.
+
 ### target-help
 Prints information about `TARGET`, which is used to specify the target Arduino
 device. Also lists detected targets.
+
+Alias of this target is t.
 
 ### upload
 Uploads the compiled program to the Arduino. This uses arduino-cli to perform
@@ -62,10 +70,14 @@ the upload to the selected `TARGET`.
 
 Specify flags to pass to `arduino-cli upload` using `UFLAGS`.
 
+Alias of this target is u.
+
 ### validate
 This validates that the Makefile set up correctly and that the `TARGET` is
 correctly configured. This target isn't necessarily intended to be used
 directly, but instead is dependent on compile, upload, and monitor.
+
+Alias of this target is v.
 
 ## User-configurable macros
 There are a few macros intended to be modified by the user in the Makefile.

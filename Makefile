@@ -1,8 +1,11 @@
 # arduino-cli executable
-ARDUINO_CLI := arduino-cli
+ARDUINO_CLI ?= arduino-cli
 
 # screen executable
-SCREEN := screen
+SCREEN ?= screen
+
+# Monitor countdown in seconds (0 to disable)
+COUNTDOWN ?= 3
 
 # Pass extra arguments to compile
 CFLAGS ?= --warnings all
@@ -57,6 +60,8 @@ compile: validate
 	source "$(target)" && \
 	"$(ARDUINO_CLI)" compile $(CFLAGS) --fqbn "$$fqbn" "$(sketch_rel)" && \
 	cd "$(sketch_abs)"
+.PHONY: c
+c: compile
 
 # Upload target
 .PHONY: upload
@@ -66,6 +71,8 @@ upload: validate
 	source "$(target)" && \
 	"$(ARDUINO_CLI)" upload $(UFLAGS) -p "$$port" --fqbn "$$fqbn" "$(sketch_rel)" && \
 	cd "$(sketch_abs)"
+.PHONY: u
+u: upload
 
 # Monitor target
 .PHONY: monitor
@@ -74,6 +81,8 @@ monitor: validate
 	@echo Use C-a C-\\ y to terminate; $(countdown)
 	source "$(target)" && \
 	"$(SCREEN)" "$$port" "$$baud_rate"
+.PHONY: m
+m: monitor
 
 # Build documentation target
 .PHONY: doc
@@ -83,6 +92,8 @@ doc:
 	headerdoc2html -o doc -e .exclude . && \
 	rm .exclude && \
 	gatherheaderdoc doc
+.PHONY: d
+d: doc
 
 # Clean target
 .PHONY: clean
@@ -99,7 +110,7 @@ warn = printf '\033[0;91m%s\033[0m' '$(1)' 1>&2
 warnln = printf '\033[0;91m%s\n\033[0m' '$(1)' 1>&2
 
 # Print a brief countdown to allow the user to read text
-countdown := for i in $$(seq 3 1); do printf "$$i... "; sleep 1; done; echo
+countdown := if [ $(COUNTDOWN) -gt 0 ]; then for i in $$(seq 3 1); do printf "$$i... "; sleep 1; done; fi; echo
 
 # Perform target validation
 .PHONY: validate
@@ -136,6 +147,8 @@ validate:
 	fi
 	@# List target information
 	@grep '\s*[^#]*.*=' $(target) | sed -e 's/\(^[a-z_]*\)=/\[0;92m\1\[0m  /' -e 's/\(^.* \)\(.*$$\)/\1\[0;36m\2\[0m/' -e 's//=/'
+.PHONY: v
+v: validate
 
 # Target help target
 .PHONY: target-help
@@ -184,3 +197,5 @@ target-help:
 	done; \
 	$(call warnln); \
 	exit 1
+.PHONY: t
+t: target-help
