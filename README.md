@@ -89,6 +89,15 @@ The name of the arduino-cli executable. If it's installed somewhere not in your
 ### `CFLAGS`
 Any extra flags you'd like to pass to `arduino-cli compile`.
 
+### `NODOC`
+Set to 0 to generate documentation. Any other value disables documentation
+generation for the doc target.
+
+This is useful for nested project directories. The top-level directory's
+Makefile can set `NODOC = 0` and inner directories' Makefiles can set `NODOC =
+1`, so the top-level directory is used only for generating all documentation
+and inner directories are used only for code.
+
 ### `SCREEN`
 The name of the screen executable. If it's installed somewhere not in your
 `PATH`, you can use the full path here.

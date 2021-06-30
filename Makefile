@@ -7,6 +7,9 @@ SCREEN ?= screen
 # Monitor countdown in seconds (0 to disable)
 COUNTDOWN ?= 3
 
+# Do not make documentation
+NODOC ?= 0
+
 # Pass extra arguments to compile
 CFLAGS ?= --warnings all
 
@@ -87,11 +90,13 @@ m: monitor
 # Build documentation target
 .PHONY: doc
 doc:
-	@$(call header,Building documentation)
-	echo '\./doc/.*' >> .exclude && \
-	headerdoc2html -o doc -e .exclude . && \
-	rm .exclude && \
-	gatherheaderdoc doc
+	@if [ $(NODOC) = 0 ]; then \
+	  $(call header,Building documentation); \
+	  echo '.*/doc/.*' >> .exclude && \
+	  headerdoc2html -o doc -e .exclude . && \
+	  rm .exclude && \
+	  gatherheaderdoc doc; \
+	fi
 .PHONY: d
 d: doc
 
