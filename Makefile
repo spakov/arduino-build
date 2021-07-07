@@ -115,7 +115,7 @@ warn = printf '\033[0;91m%s\033[0m' '$(1)' 1>&2
 warnln = printf '\033[0;91m%s\n\033[0m' '$(1)' 1>&2
 
 # Print a brief countdown to allow the user to read text
-countdown := if [ $(COUNTDOWN) -gt 0 ]; then for i in $$(seq 3 1); do printf "$$i... "; sleep 1; done; fi; echo
+countdown := if [ $(COUNTDOWN) -gt 0 ]; then for i in $$(seq $(COUNTDOWN) 1); do printf "$$i... "; sleep 1; done; fi; echo
 
 # Perform target validation
 .PHONY: validate
