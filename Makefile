@@ -55,6 +55,10 @@ target := $(targets)/$(TARGET).sh
 .DEFAULT_GOAL := all
 all: doc compile upload monitor
 
+# Alias for compile upload monitor
+.PHONY: nodoc
+nodoc: compile upload monitor
+
 # Compile target
 .PHONY: compile
 compile: validate
