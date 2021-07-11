@@ -58,6 +58,9 @@ followed by Y).
 
 Alias of this target is m.
 
+### nodoc
+Alias for compile upload monitor.
+
 ### target-help
 Prints information about `TARGET`, which is used to specify the target Arduino
 device. Also lists detected targets.
